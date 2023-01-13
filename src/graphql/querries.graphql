@@ -1,0 +1,407 @@
+query FetchAllPosts($paginateInput: PaginateInput!) {
+  fetchAllPosts(paginateInput: $paginateInput) {
+    count
+     posts {
+      user {
+        id
+        updatedAt
+        lastName
+        firstName
+        email
+        createdAt
+        fullName
+      }
+      title
+      attachmentUrl
+      description
+      createdAt
+      id
+      postComments {
+        user {
+          fullName
+          id
+          updatedAt
+          lastName
+          firstName
+          email
+          createdAt
+        }
+        commentBody
+        id
+        reply {
+          user {
+            fullName
+            updatedAt
+            lastName
+            id
+            firstName
+            email
+            createdAt
+          }
+          id
+          commentBody
+          parent {
+            id
+            createdAt
+            commentBody
+            updatedAt
+          }
+          reply {
+            user {
+              id
+              fullName
+              updatedAt
+              lastName
+              firstName
+              email
+              createdAt
+            }
+            commentBody
+            id
+            parent {
+              id
+              updatedAt
+              createdAt
+              commentBody
+            }
+            reply {
+              commentBody
+              id
+              parent {
+                id
+                updatedAt
+                createdAt
+                commentBody
+              }
+              user {
+                id
+                fullName
+                updatedAt
+                lastName
+                firstName
+                email
+                createdAt
+              }
+              reply {
+                user {
+                  id
+                  fullName
+                  updatedAt
+                  lastName
+                  firstName
+                  email
+                  createdAt
+                }
+                commentBody
+                id
+                reply {
+                  commentBody
+                  id
+                  parent {
+                    id
+                    updatedAt
+                    createdAt
+                    commentBody
+                  }
+                  user {
+                    id
+                    fullName
+                    updatedAt
+                    lastName
+                    firstName
+                    email
+                    createdAt
+                  }
+                  updatedAt
+                  createdAt
+                }
+                parent {
+                  id
+                  commentBody
+                  createdAt
+                  updatedAt
+                }
+                updatedAt
+                createdAt
+              }
+              updatedAt
+              createdAt
+            }
+            updatedAt
+            createdAt
+          }
+          updatedAt
+          createdAt
+        }
+        updatedAt
+        createdAt
+      }
+      updatedAt
+    }
+  }
+}
+
+query FetchPost($postId: String!) {
+  fetchPost(postId: $postId) {
+     title
+    description
+    readTime
+    id
+  }
+}
+
+query FetchUserPosts($paginateInput: PaginateInput!) {
+  fetchUserPosts(paginateInput: $paginateInput) {
+    count
+     posts {
+      user {
+        id
+        updatedAt
+        lastName
+        firstName
+        email
+        createdAt
+        fullName
+      }
+      title
+      attachmentUrl
+      description
+      createdAt
+      id
+      postComments {
+        user {
+          fullName
+          id
+          updatedAt
+          lastName
+          firstName
+          email
+          createdAt
+        }
+        commentBody
+        id
+        reply {
+          user {
+            fullName
+            updatedAt
+            lastName
+            id
+            firstName
+            email
+            createdAt
+          }
+          id
+          commentBody
+          parent {
+            id
+            createdAt
+            commentBody
+            updatedAt
+          }
+          reply {
+            user {
+              id
+              fullName
+              updatedAt
+              lastName
+              firstName
+              email
+              createdAt
+            }
+            commentBody
+            id
+            parent {
+              id
+              updatedAt
+              createdAt
+              commentBody
+            }
+            reply {
+              commentBody
+              id
+              parent {
+                id
+                updatedAt
+                createdAt
+                commentBody
+              }
+              user {
+                id
+                fullName
+                updatedAt
+                lastName
+                firstName
+                email
+                createdAt
+              }
+              reply {
+                user {
+                  id
+                  fullName
+                  updatedAt
+                  lastName
+                  firstName
+                  email
+                  createdAt
+                }
+                commentBody
+                id
+                reply {
+                  commentBody
+                  id
+                  parent {
+                    id
+                    updatedAt
+                    createdAt
+                    commentBody
+                  }
+                  user {
+                    id
+                    fullName
+                    updatedAt
+                    lastName
+                    firstName
+                    email
+                    createdAt
+                  }
+                  updatedAt
+                  createdAt
+                }
+                parent {
+                  id
+                  commentBody
+                  createdAt
+                  updatedAt
+                }
+                updatedAt
+                createdAt
+              }
+              updatedAt
+              createdAt
+            }
+            updatedAt
+            createdAt
+          }
+          updatedAt
+          createdAt
+        }
+        updatedAt
+        createdAt
+      }
+      updatedAt
+    }
+  }
+}
+
+query GetCurrentUser {
+  getCurrentUser {
+    id
+    fullName
+    email
+    firstName
+    lastName
+  }
+}
+
+query SearchPost($queryString: String!) {
+  searchPost(queryString: $queryString) {
+     
+      user {
+        fullName
+        id
+        lastName
+        firstName
+        email
+      }
+      title
+      attachmentUrl
+      description
+      id
+      postComments {
+        user {
+          fullName
+          id
+          lastName
+          firstName
+          email
+        }
+        commentBody
+        id
+        reply {
+          user {
+            id
+            fullName
+            lastName
+            firstName
+            email
+          }
+          id
+          commentBody
+          parent {
+            id
+            commentBody
+          }
+          reply {
+            user {
+              id
+              fullName
+              lastName
+              firstName
+              email
+            }
+            commentBody
+            id
+            parent {
+              id
+              commentBody
+            }
+            reply {
+              commentBody
+              id
+              parent {
+                id
+                commentBody
+              }
+              user {
+                id
+                fullName
+                lastName
+                firstName
+                email
+              }
+              reply {
+                user {
+                  id
+                  fullName
+                  lastName
+                  firstName
+                  email
+                }
+                commentBody
+                id
+                reply {
+                  commentBody
+                  id
+                  parent {
+                    id
+                    commentBody
+                  }
+                  user {
+                    id
+                    fullName
+                    lastName
+                    firstName
+                    email
+                  }
+                }
+                parent {
+                  id
+                  commentBody
+                }
+              }
+            }
+          }
+        }
+      }
+  }
+}

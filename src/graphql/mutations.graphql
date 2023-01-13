@@ -1,0 +1,81 @@
+mutation Login($loginUser: LoginUserInput!) {
+  login(loginUser: $loginUser) {
+    access_token
+  }
+}
+
+mutation signUp($signUpUserInput: CreateUserInput!) {
+  signUp(signUpUserInput: $signUpUserInput) {
+    access_token
+    user {
+      email
+      firstName
+      lastName
+      id
+      createdAt
+    }
+  }
+}
+
+mutation ForgotPassword($email: String!) {
+  forgotPassword(email: $email) {
+    userKey
+  }
+}
+
+mutation UpdatePassword($passwordUpdateInput: UpdatePasswordInput!) {
+  updatePassword(passwordUpdateInput: $passwordUpdateInput) {
+    status
+    message
+  }
+}
+
+mutation CreatePost($createPostInput: CreatePostInput!) {
+  createUserPost(createPostInput: $createPostInput) {
+    message
+    status
+  }
+}
+
+mutation CreatePostComment($createCommentInput: CreateCommentInput!) {
+  createPostComment(createCommentInput: $createCommentInput) {
+    status
+    message
+  }
+}
+
+mutation DeletePost($postId: String!) {
+  deletePost(postId: $postId) {
+    status
+    message
+  }
+}
+
+mutation UpdateUserPost($updatePostInput: UpdatePostInput!) {
+  updateUserPost(updatePostInput: $updatePostInput) {
+    status
+    message
+  }
+}
+
+mutation DeleteComment($commentId: String!) {
+  deleteComment(commentId: $commentId) {
+    status
+    message
+  }
+}
+
+mutation UpdateComment($updateCommentInput: UpdateCommentInput!) {
+  updateComment(updateCommentInput: $updateCommentInput) {
+    status
+    message
+  }
+}
+
+mutation UpdateUser($updateUserInput: UpdateUserInput!) {
+  updateUser(updateUserInput: $updateUserInput) {
+    status
+    message
+  }
+}
+
