@@ -8,8 +8,8 @@ import App from './App';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
-
-const httpLink = new HttpLink({ uri: 'http://localhost:3000/graphql' })
+const SERVER_URL=process.env.REACT_APP_SERVER_URL;
+const httpLink = new HttpLink({ uri: SERVER_URL })
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors){
