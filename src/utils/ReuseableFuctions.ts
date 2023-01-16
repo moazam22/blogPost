@@ -31,9 +31,7 @@ export const gteOnlineUsers = (socket: Socket, dispatch: Dispatch<Action>) => {
 }
 
 export const updateMessageList = (newMessage: Message, dispatch: Dispatch<Action>, messages: Message[] | []) => {
-  console.log('in-update ')
   const updatedMessages = [...messages, newMessage];
-  console.log('update-messages = ', updatedMessages);
   dispatch({type: ActionTypes.SET_MESSAGES, messages: [...updatedMessages]});
 }
 

@@ -6,7 +6,6 @@ import {
   Menu,
   MenuButton,
   MenuList,
-  // MenuItem,
   IconButton,
   useMediaQuery,
 } from '@chakra-ui/react';
