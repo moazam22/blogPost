@@ -1,4 +1,4 @@
-import { useState, useCallback, useContext } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import { Flex } from "@chakra-ui/react";
 import UserList from "./UserList";
 import ChatBox from "./ChatBox";
@@ -8,7 +8,15 @@ import { ActionTypes } from "../../Context/AppReducer";
 
 const Chat = () => {
   const [selectedUser, setSelectedUser] = useState<OnlineUsersType | null>(null);
+  const [filteredOnlineUsers, setFilteredOnlineUsers] = useState<OnlineUsersType[] | []>([]);
   const {user, onlineUsers, notifications, dispatch} = useContext(GlobalContext);
+
+  useEffect(() => {
+    if(!!onlineUsers?.length){
+      const filterCurrentUser = onlineUsers.filter((onlineUser => onlineUser.userId !== user?.id));
+      setFilteredOnlineUsers(filterCurrentUser);
+    }
+  }, [onlineUsers, user]);
 
   const clearSelectedUserNotification = useCallback((_user: OnlineUsersType | null) => {
     if(!!_user){
@@ -25,18 +33,16 @@ const Chat = () => {
     clearSelectedUserNotification(_user);
   },[clearSelectedUserNotification]);
 
-  
-
   return (
     <Flex pt='2em' pb='1em' h='90vh' ml='5%' mr='5%'>
       <UserList 
         selectedUser={selectedUser} 
-        onlineUsers = {onlineUsers} 
+        onlineUsers = {filteredOnlineUsers} 
         notifications={notifications} 
         updateSelectedUser={updateSelectedUser} 
         user={user}
       />
-      <ChatBox selectedUser={selectedUser} clearSelectedUserNotification={clearSelectedUserNotification}/>
+      <ChatBox selectedUser={selectedUser} clearSelectedUserNotification={clearSelectedUserNotification} onlineUsers = {filteredOnlineUsers}/>
     </Flex>
   )
 }

@@ -88,7 +88,7 @@ const Views = () => {
             <Route path="/" element={<LoginPage />}/>
             <Route path="/log-in" element={<LoginPage />}/>
             <Route path="/sign-up" element={<SignUpPage />}/>
-            <Route path="/forget-password" element={<ForgetPassword/>}/>
+            <Route path="/forgot-password" element={<ForgetPassword/>}/>
             <Route path="*" element={<Navigate to="/" />}/>
           </>
         )

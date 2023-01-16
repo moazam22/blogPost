@@ -7,13 +7,18 @@ import { GlobalContext } from "../../Context/GlobalProvider";
 import { border } from "../../utils";
 import {OnlineUsersType} from '../../Context/utils/interfaces';
 import { updateMessageList } from "../../utils/ReuseableFuctions";
+import ChatHelperText from "./ChatHelperText";
 
 interface Props {
   selectedUser: OnlineUsersType | null;
+  onlineUsers: OnlineUsersType[] | [];
   clearSelectedUserNotification: (_user: OnlineUsersType | null) => void;
 }
 
-const ChatBox: React.FC <Props> = ({selectedUser, clearSelectedUserNotification, }) => {
+const selectUserMessage = `Select a user to chat`;
+const allUsersOffline = `All other users are offline.`
+
+const ChatBox: React.FC <Props> = ({selectedUser, onlineUsers, clearSelectedUserNotification}) => {
   const {user, socket, messages, dispatch} = useContext(GlobalContext);
   const messagesRef = createRef<HTMLDivElement>();
 
@@ -54,7 +59,7 @@ const ChatBox: React.FC <Props> = ({selectedUser, clearSelectedUserNotification,
       borderBottom={border}
     >
       {
-        !!selectedUser ? (
+        !!selectedUser && !!onlineUsers?.length ? (
         <>
           <Flex
             h='10%'
@@ -74,7 +79,7 @@ const ChatBox: React.FC <Props> = ({selectedUser, clearSelectedUserNotification,
             flexWrap='wrap'
           >
             {
-              !!messages?.length && messages.map((message, index) => 
+             !!messages?.length && messages.map((message, index) => 
                 ((message.receiverId === selectedUser?.userId) || (message.senderId === selectedUser?.userId))
                 && (
                   <Flex
@@ -110,13 +115,7 @@ const ChatBox: React.FC <Props> = ({selectedUser, clearSelectedUserNotification,
           </Flex>
         </>
         ) : (
-          <Flex
-            justifyContent='center'
-            alignItems='center'
-            h='100%'
-          >
-            <Text fontWeight='600' fontSize='2xl' color='#c2a400'>Select a user to chat</Text>
-          </Flex>
+          <ChatHelperText message={!onlineUsers?.length ? allUsersOffline : selectUserMessage}/>
         )
       }
     </Flex>

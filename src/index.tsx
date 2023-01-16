@@ -26,7 +26,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
       // Perform logout logic
       localStorage.removeItem('user');
       // Redirect to login page
-      // window.location.replace('/login');
+      window.location.replace('/login');
       // console.log('it should logout here');
       // const navigate = useNavigate();
       // navigate('/login');

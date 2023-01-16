@@ -26,3 +26,5 @@ export const MenuItems = [
 ];
 
 export const border = '1px solid #d4c5c5';
+
+export const paginationLimit = 3;

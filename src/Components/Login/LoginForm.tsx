@@ -141,10 +141,10 @@ const LoginForm = () => {
               textDecoration='underline' 
               color='#c2a400'
               cursor='pointer'
-              onClick={()=>navigate('/forget-password')}
+              onClick={()=>navigate('/forgot-password')}
               _hover={{ color: '#0a0ab4'}}
             >
-              Forget Password?
+              Forgot Password?
             </Text>
           </Flex>
           
