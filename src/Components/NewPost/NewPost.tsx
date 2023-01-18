@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {useForm} from 'react-hook-form';
 import { 
   FormControl, 
@@ -54,7 +54,7 @@ const NewPost = () => {
   useEffect(() => {
     if(!!selectedDate)
       setValue('readTime',moment(selectedDate).format('YYYY-MM-DD'))
-  },[selectedDate]);
+  },[selectedDate, setValue]);
 
   const handleError = (error: ApolloError, message: string) => {
     console.error(error.message);
@@ -118,7 +118,7 @@ const NewPost = () => {
     navigate('/blogs');
   }
 
-  const handleDateChange = (date: Date | null, event: SyntheticEvent<any, Event> | undefined) => {
+  const handleDateChange = (date: Date | null) => {
     setSelectedDate(date);
   };
 
