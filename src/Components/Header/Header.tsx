@@ -29,6 +29,7 @@ const Header:React.FC <Props> = ({headingText}) => {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
+    localStorage.removeItem('messages');
     dispatch({type: ActionTypes.SET_USER, user: null});
     socket?.close();
     dispatch({type: ActionTypes.SET_SOCKET, socket: null})

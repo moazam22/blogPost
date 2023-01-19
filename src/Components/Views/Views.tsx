@@ -31,7 +31,7 @@ const Views = () => {
       getUser();
     }
     if(!!user?.access_token && !socket){
-      let socket = makeSocketConnection(user.access_token);
+      let socket = makeSocketConnection(user.access_token, dispatch);
       if(!!socket)
         gteOnlineUsers(socket, dispatch);
         dispatch({type: ActionTypes.SET_SOCKET, socket: !!socket ? socket : null});

@@ -6,12 +6,18 @@ import { Message } from "../Context/utils/interfaces";
 
 const socketUrl = process.env.REACT_APP_SOCKET_URL;
 
-export const makeSocketConnection = (token: string) => {
+export const makeSocketConnection = (token: string, dispatch: Dispatch<Action>) => {
   try{
     const socket = io(socketUrl!,{
       extraHeaders: {
         'Authorization': `Bearer ${token}`
       }
+    });
+    socket.on('connect', function() {
+      let lsMessages = localStorage.getItem('messages');
+      const messages: Message[] = !!lsMessages ? JSON.parse(lsMessages) : [];
+      if(!!messages && !!messages?.length)
+        dispatch({type: ActionTypes.SET_MESSAGES, messages: [...messages]});
     });
     return socket;
   }catch(err){
@@ -33,5 +39,6 @@ export const gteOnlineUsers = (socket: Socket, dispatch: Dispatch<Action>) => {
 export const updateMessageList = (newMessage: Message, dispatch: Dispatch<Action>, messages: Message[] | []) => {
   const updatedMessages = [...messages, newMessage];
   dispatch({type: ActionTypes.SET_MESSAGES, messages: [...updatedMessages]});
+  localStorage.setItem('messages', JSON.stringify(updatedMessages));
 }
 

@@ -1,4 +1,4 @@
-import { useState , useContext} from 'react';
+import { useState, useContext} from 'react';
 import {useForm} from 'react-hook-form';
 import { 
     FormControl, 
@@ -50,7 +50,7 @@ const LoginForm = () => {
   const onLogin = async (data: LoginMutation) => {
     const {login} = data;
     if(login?.access_token){
-      let socket = makeSocketConnection(login.access_token);
+      let socket = makeSocketConnection(login.access_token, dispatch);
       if(!!socket)
         gteOnlineUsers(socket, dispatch);
       localStorage.setItem('user', JSON.stringify(login));

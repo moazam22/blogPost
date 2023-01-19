@@ -23,13 +23,9 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     );
 
     if (unauthorized || forbidden) {
-      // Perform logout logic
       localStorage.removeItem('user');
-      // Redirect to login page
+      localStorage.removeItem('messages');
       window.location.replace('/login');
-      // console.log('it should logout here');
-      // const navigate = useNavigate();
-      // navigate('/login');
     }
     
     graphQLErrors.forEach(({ message, locations, path }) =>
