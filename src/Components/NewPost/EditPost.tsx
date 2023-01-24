@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { UpdatePostInput, useFetchPostLazyQuery, useUpdateUserPostMutation } from "../../generated/graphql";
+import { InputMaybe, useFetchPostLazyQuery, useUpdateUserPostMutation } from "../../generated/graphql";
 import { FetchPostQuery } from "../../generated/graphql";
 import {
   Flex,
@@ -9,21 +9,31 @@ import {
   FormControl,
   FormLabel,
   FormErrorMessage,
-  Input,
   Textarea,
   Button,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
-import {useForm} from 'react-hook-form';
+import {Controller, FormProvider, useForm} from 'react-hook-form';
 import { ApolloError } from "@apollo/client";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { editPost } from "../../utils/FormScemas";
+import InputField from "../InputField/InputField";
+
+interface UpdatePostInput {
+  postId: string;
+  attachmentUrl?: InputMaybe<string> | undefined;
+  description: string;
+  readTime?: string;
+  title: string;
+}
 
 const EditPost = () => {
   const [postId, setPostId] = useState<null|string|undefined>(null);
-  const {register, handleSubmit, setValue, formState: {errors}} = useForm<UpdatePostInput>({
+  const editPostForm = useForm<UpdatePostInput>({
     resolver: yupResolver(editPost),
   });
+
+  const { handleSubmit, setValue, control } = editPostForm;
   
   const [ fetchPostData, {data: formData, loading: loadingFormData,} ] = 
     useFetchPostLazyQuery({
@@ -98,50 +108,51 @@ const EditPost = () => {
         <Text ml='2em'>Loading form data</Text>
       </Flex>
     ) : (
-      <form  onSubmit={handleSubmit(onSubmit)}>
-      <Flex  mt='1em' w='95%' ml='1em' justifyContent='center' alignItems='center'>
-          <Text fontSize='xl' fontWeight='500'>New Post</Text>
-      </Flex>
-      <FormControl mt='1em' w='95%' ml='1em' isInvalid={!!errors?.title}>
-          <FormLabel>Title</FormLabel>
-          <Input  
-            { ...register('title',) } 
-            id="title" 
-            type="text"
-          />
-          {
-              !!errors?.title && <FormErrorMessage>{errors.title.message}</FormErrorMessage>
-          }
-      </FormControl> 
-      
-      <FormControl mt='1em' w='95%' ml='1em' isInvalid={!!errors?.description}>
-          <FormLabel>Description</FormLabel>
+      <FormProvider {...editPostForm}>
+        <form  onSubmit={handleSubmit(onSubmit)}>
+        <Flex  mt='1em' w='95%' ml='1em' justifyContent='center' alignItems='center'>
+            <Text fontSize='xl' fontWeight='500'>New Post</Text>
+        </Flex>
+
+        <InputField
+          label={'Title'}
+          name={'title'}
+          type={'text'}
+        />
+        
+        <Controller
+          name='description'
+          control={control}
+          render={({ field, fieldState: { error: { message } = {} } }) => (
+            <FormControl mt='1em' w='95%' ml='1em' isInvalid={!!message}>
+              <FormLabel>Description</FormLabel>
               <Textarea
-                { ...register('description') }
-                id="description" 
+                {...field}
+                id="description"
                 pr='4.5rem'
                 placeholder='Enter description'
               />
-          {
-              !!errors?.description && <FormErrorMessage>{errors.description.message}</FormErrorMessage>
-          }
-      </FormControl>  
+              {!!message && <FormErrorMessage>{message}</FormErrorMessage>}
+            </FormControl>
+          )}
+        />
 
-      <FormControl mt='2em' ml='1em' mb='1em'>
-          <Button  
-            isLoading={loadingFormData}
-            disabled={loadingFormData}
-            loadingText={'Submitting'} 
-            type="submit" 
-            name="Update Post" 
-            bg='#c2a400'
-            color='whitesmoke'
-            _hover={{bg: '#c2a400', color: 'whitesmoke'}}
-          >
-            Update
-          </Button>
-      </FormControl>
-      </form>
+        <FormControl mt='2em' ml='1em' mb='1em'>
+            <Button  
+              isLoading={loadingFormData}
+              disabled={loadingFormData}
+              loadingText={'Submitting'} 
+              type="submit" 
+              name="Update Post" 
+              bg='#c2a400'
+              color='whitesmoke'
+              _hover={{bg: '#c2a400', color: 'whitesmoke'}}
+            >
+              Update
+            </Button>
+        </FormControl>
+        </form>
+      </FormProvider>
     )
   )
 }

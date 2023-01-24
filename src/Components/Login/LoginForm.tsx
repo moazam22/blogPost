@@ -1,36 +1,27 @@
-import { useState, useContext} from 'react';
-import {useForm} from 'react-hook-form';
-import { 
-    FormControl, 
-    FormLabel, 
-    Input,  
-    Button,
-    FormErrorMessage,
-    InputGroup,
-    InputRightElement,
-    useToast,
-    Flex,
-    Text,
+import {
+  Button, Flex, FormControl, Text, useToast
 } from '@chakra-ui/react';
-import { 
-  LoginUserInput, 
-  useLoginMutation,
-  LoginMutation,
-} from '../../generated/graphql';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import { GlobalContext } from '../../Context/GlobalProvider';
-import { ActionTypes } from '../../Context/AppReducer';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useCallback, useContext, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import {yupResolver} from '@hookform/resolvers/yup';
+import { ActionTypes } from '../../Context/AppReducer';
+import { GlobalContext } from '../../Context/GlobalProvider';
+import {
+  LoginMutation, LoginUserInput,
+  useLoginMutation
+} from '../../generated/graphql';
+import { passwordConst } from '../../utils';
 import { loginSchema } from '../../utils/FormScemas';
-import { makeSocketConnection, gteOnlineUsers } from '../../utils/ReuseableFuctions';
+import { gteOnlineUsers, makeSocketConnection } from '../../utils/ReuseableFuctions';
+import InputField from '../InputField/InputField';
 
 const LoginForm = () => {
   const [showPass, setShowPass] = useState(false);
-  const {register, handleSubmit, formState: {errors}} = useForm<LoginUserInput>({
+  const LoginForm = useForm<LoginUserInput>({
     resolver: yupResolver(loginSchema), 
   });
+  const { handleSubmit } = LoginForm;
   
   const [loginMutation, { loading, error }] = 
     useLoginMutation({onCompleted: (data: LoginMutation)=>onLogin(data), onError: ()=>showErrorToaster()});
@@ -73,84 +64,68 @@ const LoginForm = () => {
     );
   }
   
-  const toggleShowPass = () => setShowPass((prevShowPass) => !prevShowPass);
+  const toggleShowPass = useCallback(() => setShowPass((prevShowPass) => !prevShowPass),[]);
 
   return (
-    <form  onSubmit={handleSubmit(onSubmit)}>
-      <Flex  mt='1em' w='95%' ml='1em' justifyContent='center' alignItems='center'>
-          <Text fontSize='xl' fontWeight='500'>Login</Text>
-      </Flex>
-      <FormControl mt='1em' w='95%' ml='1em' isInvalid={!!errors?.email}>
-          <FormLabel>Email</FormLabel>
-          <Input  
-            { ...register('email') } 
-            id="email" 
-            type="text"
-          />
-          {
-              !!errors?.email && <FormErrorMessage>{errors.email.message}</FormErrorMessage>
-          }
-      </FormControl>
-      <FormControl mt='1em' w='95%' ml='1em' isInvalid={!!errors?.password}>
-          <FormLabel>Password</FormLabel>
-           <InputGroup size='md'>
-              <Input
-                { ...register('password') }
-                id="password" 
-                pr='4.5rem'
-                type={showPass ? 'text' : 'password'}
-                placeholder='Enter password'
-              />
-              <InputRightElement width='4.5rem'>
-                <FontAwesomeIcon 
-                  cursor='pointer' 
-                  icon={showPass ? faEye : faEyeSlash} 
-                  onClick={toggleShowPass}
-                />
-              </InputRightElement>
-            </InputGroup>
-          {
-              !!errors?.password && <FormErrorMessage>{errors.password.message}</FormErrorMessage>
-          }
-      </FormControl>   
-      <FormControl mt='2em' ml='1em' mb='1em'>
-        <Flex w='90%' alignItems='center' justifyContent='space-between'>
-          <Button  
-            isLoading={loading} 
-            type="submit" 
-            name="Login" 
-            bg='#c2a400'
-            color='whitesmoke'
-            _hover={{bg: '#c2a400', color: 'whitesmoke'}}
-          >
-            Login
-          </Button>
-          <Flex direction='column' alignItems='flex-start'>
-            <Text 
-              fontSize='14px' 
-              textDecoration='underline' 
-              color='#c2a400'
-              cursor='pointer'
-              onClick={()=>navigate('/sign-up')}
-              _hover={{ color: '#0a0ab4'}}
-            >
-              Don't have an account? Sign-up
-            </Text>
-            <Text 
-              fontSize='14px' 
-              textDecoration='underline' 
-              color='#c2a400'
-              cursor='pointer'
-              onClick={()=>navigate('/forgot-password')}
-              _hover={{ color: '#0a0ab4'}}
-            >
-              Forgot Password?
-            </Text>
-          </Flex>
-          
+    <FormProvider {...LoginForm}>
+      <form  onSubmit={handleSubmit(onSubmit)}>
+        <Flex  mt='1em' w='95%' ml='1em' justifyContent='center' alignItems='center'>
+            <Text fontSize='xl' fontWeight='500'>Login</Text>
         </Flex>
-      </FormControl>
-    </form>
+      
+        <InputField 
+          label={'Email'}
+          name={'email'}
+          type={'text'}
+        />
+
+        <InputField 
+          label = {'Password'}
+          name = {passwordConst}
+          type = {passwordConst}
+          toggleShowPass = {toggleShowPass}
+          showPass = {showPass}
+        />
+
+        <FormControl mt='2em' ml='1em' mb='1em'>
+          <Flex w='90%' alignItems='center' justifyContent='space-between'>
+            <Button  
+              isLoading={loading} 
+              type="submit" 
+              name="Login" 
+              bg='#c2a400'
+              color='whitesmoke'
+              _hover={{bg: '#c2a400', color: 'whitesmoke'}}
+            >
+              Login
+            </Button>
+            <Flex direction='column' alignItems='flex-start'>
+              <Text 
+                fontSize='14px' 
+                textDecoration='underline' 
+                color='#c2a400'
+                cursor='pointer'
+                onClick={()=>navigate('/sign-up')}
+                _hover={{ color: '#0a0ab4'}}
+              >
+                Don't have an account? Sign-up
+              </Text>
+              <Text 
+                fontSize='14px' 
+                textDecoration='underline' 
+                color='#c2a400'
+                cursor='pointer'
+                onClick={()=>navigate('/forgot-password')}
+                _hover={{ color: '#0a0ab4'}}
+              >
+                Forgot Password?
+              </Text>
+            </Flex>
+            
+          </Flex>
+        </FormControl>
+      </form>
+    </FormProvider>
   )
 }
 

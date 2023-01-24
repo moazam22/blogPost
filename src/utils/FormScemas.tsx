@@ -27,7 +27,7 @@ export const editPost = yup.object().shape({
 export const updateUser = yup.object().shape({
   firstName: yup.string().required(),
   lastName: yup.string().required(),
-  email: yup.string().required(),
+  email: yup.string().email().required(),
 });
 
 export const userKey = yup.object().shape({
@@ -37,3 +37,7 @@ export const userKey = yup.object().shape({
 export const resetPassword = yup.object().shape({
   password: yup.string().min(6).required(),
 });
+
+export const commentFormSchema = yup.object().shape({
+  commentBody: yup.string().required(),
+})

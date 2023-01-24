@@ -13,9 +13,11 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { CreateCommentInput } from "../../generated/graphql";
-import { useForm } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useCreatePostCommentMutation } from "../../generated/graphql";
+import { commentFormSchema } from "../../utils/FormScemas";
 import styles from '../SearchBar/SearchBar.module.css';
+import { yupResolver } from "@hookform/resolvers/yup";
 
 interface Props {
   showAddCommentSection?: boolean;
@@ -38,7 +40,10 @@ const AddComment: React.FC<Props> = ({
     refetchPosts,
     updateComment,
   }) => {
-  const {register, handleSubmit, reset, setValue, getValues, formState: {errors}} = useForm<CreateCommentInput>();
+  const addCommentForm = useForm<CreateCommentInput>({
+    resolver: yupResolver(commentFormSchema),
+  });
+  const {register, handleSubmit, reset, setValue, getValues, control, formState: {errors}} = addCommentForm;
   const [createPostCommentMutation, { loading }] 
     = useCreatePostCommentMutation(
     {
@@ -94,40 +99,45 @@ const AddComment: React.FC<Props> = ({
   return (
     <Collapse in={showAddCommentSection || editComment} animateOpacity>
       <Flex w='100%' mt='0.5em' mb='1em'>
+      <FormProvider {...addCommentForm}>
         <form className={styles.formWidth} onSubmit={!!editComment ? handleSubmit(handleEditComment) : handleSubmit(onSubmit)}>  
-          <FormControl isInvalid={!!errors?.commentBody} px='0.5em'>
-            <InputGroup >
-              <Input
-                {...register('commentBody', 
-                    {
-                      required: 'Comment is required.'
-                    }
-                  )
-                } 
-                type='text'
-                placeholder="Type here..."
-                disabled={loading}
-              />
-              {
-                !!errors?.commentBody && <FormErrorMessage>{errors.commentBody.message}</FormErrorMessage>
-              }
-              <InputRightElement>
-              {
-                !!loading 
-                ?
-                  <Spinner h='10px' w='10px' color='#c2a400' /> 
-                :
-                  <FontAwesomeIcon 
-                    icon={faPaperPlane}
-                    color='#c2a400'
-                    cursor='pointer'
-                    onClick={() => !!editComment ? handleSubmit(handleEditComment)() :  handleSubmit(onSubmit)()}
+         
+          <Controller
+            name='commentBody'
+            control = {control}
+            defaultValue=''
+            render = {({field, fieldState: {error: {message} = {}}}) => (
+              <FormControl isInvalid={!!message} px='0.5em'>
+                <InputGroup >
+                  <Input
+                    {...field}
+                    type='text'
+                    placeholder="Type here..."
+                    disabled={loading}
                   />
-              }
-              </InputRightElement>
-            </InputGroup>
-          </FormControl>
+                  <InputRightElement>
+                  {
+                    !!loading 
+                    ?
+                      <Spinner h='10px' w='10px' color='#c2a400' /> 
+                    :
+                      <FontAwesomeIcon 
+                        icon={faPaperPlane}
+                        color='#c2a400'
+                        cursor='pointer'
+                        onClick={() => !!editComment ? handleSubmit(handleEditComment)() :  handleSubmit(onSubmit)()}
+                      />
+                  }
+                  </InputRightElement>
+                </InputGroup>
+                {
+                  !!message && <FormErrorMessage>{message}</FormErrorMessage>
+                }
+              </FormControl>
+            )}
+          />
         </form>
+      </FormProvider>
       </Flex>
     </Collapse>
   )

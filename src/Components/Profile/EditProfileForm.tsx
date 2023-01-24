@@ -1,33 +1,26 @@
-import { useContext, useEffect, memo } from "react";
-import { useForm } from "react-hook-form";
-import { 
-  useUpdateUserMutation,
-  UpdateUserInput,
-} from "../../generated/graphql";
-import { 
-  Flex,
-  Text,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Input, 
-  Button,
-  useToast,
+import {
+  Button, Flex, FormControl, Text, useToast
 } from "@chakra-ui/react";
-import { GlobalContext } from "../../Context/GlobalProvider";
-import { ActionTypes } from "../../Context/AppReducer";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {updateUser} from '../../utils/FormScemas';
+import { memo, useContext } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { ActionTypes } from "../../Context/AppReducer";
+import { GlobalContext } from "../../Context/GlobalProvider";
+import {
+  UpdateUserInput, useUpdateUserMutation
+} from "../../generated/graphql";
+import { updateUser } from '../../utils/FormScemas';
+import InputField from "../InputField/InputField";
 
 interface Props {
   closeEditForm: ()=>void;
 }
 
 const EditProfileForm: React.FC<Props> = ({closeEditForm}) => {
-  const {register, handleSubmit, setValue, getValues, formState: {errors}} 
-    = useForm<UpdateUserInput>({
+  const editProfileForm = useForm<UpdateUserInput>({
       resolver: yupResolver(updateUser),
-    });
+  });
+  const {handleSubmit, getValues, formState: {errors}} = editProfileForm;
   const {user,dispatch} = useContext(GlobalContext);
   const toast = useToast();
 
@@ -40,14 +33,6 @@ const EditProfileForm: React.FC<Props> = ({closeEditForm}) => {
       position: 'top',
     })
   });
-
-  useEffect(() => {
-    if(!!user){
-      setValue('firstName', user.firstName);
-      setValue('lastName', user.lastName);
-      setValue('email', user.email!);
-    }
-  },[]);
 
   const onSubmit = (data: UpdateUserInput) => {
     if(!!isChanged()){
@@ -96,58 +81,48 @@ const EditProfileForm: React.FC<Props> = ({closeEditForm}) => {
   }
 
   return (
-    <form  onSubmit={handleSubmit(onSubmit)}>
-      <Flex  mt='1em' w='95%' ml='1em' justifyContent='center' alignItems='center'>
-          <Text fontSize='xl' fontWeight='500'>Edit</Text>
-      </Flex>
-      <FormControl mt='1em' w='95%' ml='1em' isInvalid={!!errors?.firstName}>
-          <FormLabel>First Name</FormLabel>
-          <Input  
-            { ...register('firstName') } 
-            id="firstName" 
-            type="text"
-          />
-          {
-              !!errors?.firstName && <FormErrorMessage>{errors.firstName.message}</FormErrorMessage>
-          }
-      </FormControl>
-      <FormControl mt='1em' w='95%' ml='1em' isInvalid={!!errors?.lastName}>
-          <FormLabel>Last Name</FormLabel>
-          <Input  
-            { ...register('lastName') }
-            id="lastName" 
-            type="text"
-          />
-          {
-              !!errors?.lastName && <FormErrorMessage>{errors.lastName.message}</FormErrorMessage>
-          }
-      </FormControl>
-      <FormControl mt='1em' w='95%' ml='1em' isInvalid={!!errors?.email}>
-          <FormLabel>Email</FormLabel>
-          <Input  
-            { ...register('email') } 
-            id="email" 
-            type="text"
-          />
-          {
-              !!errors?.email && <FormErrorMessage>{errors.email.message}</FormErrorMessage>
-          }
-      </FormControl>
-      <FormControl mt='2em' ml='1em' mb='1em'>
-        <Button  
-          isLoading={loading} 
-          type="submit" 
-          name="Login" 
-          bg='#c2a400'
-          color='whitesmoke'
-          _hover={{bg: '#c2a400', color: 'whitesmoke'}}
-          // isDisabled={}
-        >
-          Update
-        </Button>
-      </FormControl>
+    <FormProvider {...editProfileForm}>
+      <form  onSubmit={handleSubmit(onSubmit)}>
+        <Flex  mt='1em' w='95%' ml='1em' justifyContent='center' alignItems='center'>
+            <Text fontSize='xl' fontWeight='500'>Edit</Text>
+        </Flex>
 
-    </form>
+        <InputField
+          label={'First Name'}
+          name={'firstName'}
+          type={'text'}
+          defaulValue={user?.firstName}
+        />
+
+        <InputField
+          label={'Last Name'}
+          name={'lastName'}
+          type={'text'}
+          defaulValue={user?.lastName}
+        />
+
+        <InputField
+          label={'Email'}
+          name={'email'}
+          type={'text'}
+          defaulValue={user?.email}
+        />
+
+        <FormControl mt='2em' ml='1em' mb='1em'>
+          <Button  
+            isLoading={loading} 
+            type="submit" 
+            name="Login" 
+            bg='#c2a400'
+            color='whitesmoke'
+            _hover={{bg: '#c2a400', color: 'whitesmoke'}}
+          >
+            Update
+          </Button>
+        </FormControl>
+
+      </form>
+    </FormProvider>
   )
 }
 
