@@ -28,7 +28,7 @@ const GlobalProvider: React.FC<Props> = ({children}) => {
   
   return (
     <GlobalContext.Provider value={{...store}}> 
-        {children}
+      {children}
     </GlobalContext.Provider>
   )
 }
